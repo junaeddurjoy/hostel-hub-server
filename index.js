@@ -52,7 +52,7 @@ async function run() {
     // add user
     app.post('/user', async (req, res) => {
       const newUser = req.body;
-      const existingUser = await userCollection.findOne(newUser);
+      const existingUser = await userCollection.findOne({ email: newUser.email });
       if (existingUser) {
         // If the user already exists, send a response indicating duplication
         res.status(400).send({ message: 'User already exists' });
