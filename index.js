@@ -52,13 +52,15 @@ async function run() {
     // add user
     app.post('/user', async (req, res) => {
       const newUser = req.body;
-      // if(userCollection.includes(newUser)){
-      //   pass
-      // }
-      // else{
-      const result = await userCollection.insertOne(newUser);
-      // }
-      res.send(result);
+      const existingUser = await userCollection.findOne(newUser);
+      if (existingUser) {
+        // If the user already exists, send a response indicating duplication
+        res.status(400).send({ message: 'User already exists' });
+      } else {
+        // If the user does not exist, insert the new user
+        const result = await userCollection.insertOne(newUser);
+        res.send(result);
+      }
     })
     app.get('/user', async (req, res) => {
       const cursor = userCollection.find();
