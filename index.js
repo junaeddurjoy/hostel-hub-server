@@ -32,6 +32,7 @@ async function run() {
     // await client.connect();
 
     const mealCollection = client.db('hostelhub').collection('meal');
+    const userCollection = client.db('hostelhub').collection('user');
 
     // get all result
     app.get('/meal', async (req, res) => {
@@ -48,7 +49,22 @@ async function run() {
       res.send(result);
     })
 
-
+    // add user
+    app.post('/user', async (req, res) => {
+      const newUser = req.body;
+      // if(userCollection.includes(newUser)){
+      //   pass
+      // }
+      // else{
+      const result = await userCollection.insertOne(newUser);
+      // }
+      res.send(result);
+    })
+    app.get('/user', async (req, res) => {
+      const cursor = userCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
 
 
 
