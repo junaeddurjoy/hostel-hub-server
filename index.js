@@ -33,8 +33,9 @@ async function run() {
 
     const mealCollection = client.db('hostelhub').collection('meal');
     const userCollection = client.db('hostelhub').collection('user');
+    const requestCollection = client.db('hostelhub').collection('request');
 
-    // get all result
+    // get all meal
     app.get('/meal', async (req, res) => {
       const cursor = mealCollection.find();
       const result = await cursor.toArray();
@@ -62,6 +63,7 @@ async function run() {
         res.send(result);
       }
     })
+    // get user
     app.get('/user', async (req, res) => {
       const cursor = userCollection.find();
       const result = await cursor.toArray();
@@ -74,39 +76,26 @@ async function run() {
       const result = await userCollection.findOne(query);
       res.send(result);
     })
-    // request meal
-    app.put('/user/:id', async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: new ObjectId(id) }
-      const options = { upsert: true };
-      const updatedApply = req.body;
-      const apply = {
-        $push: {
-          food: {
-            $each: [updatedApply.food_id],
-            $position: 0 // This will add the new item as the last element in the array
-          }
-        }
-      }
-      const result = await userCollection.updateOne(filter, apply, options);
+
+    // add request
+    app.post('/request', async (req, res) => {
+      const updatedReqApply = req.body;
+      const result = await requestCollection.insertOne(updatedReqApply);
       res.send(result);
     })
-    // update rand
-    app.put('/user/:id', async (req, res) => {
+    // delete request
+    app.delete('/request/:id', async (req, res) => {
       const id = req.params.id;
-      const filter = { _id: new ObjectId(id) }
-      const options = { upsert: true };
-      const updatedApply = req.body;
-      const apply = {
-        $set: {
-          membership : updatedApply.membership
-        }
-      }
-      const result = await userCollection.updateOne(filter, apply, options);
+      const query = { _id: new ObjectId(id) }
+      const result = await requestCollection.deleteOne(query);
+      res.send(result)
+    });
+    // get request
+    app.get('/request', async (req, res) => {
+      const cursor = requestCollection.find();
+      const result = await cursor.toArray();
       res.send(result);
     })
-
-
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
