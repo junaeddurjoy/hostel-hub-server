@@ -6,7 +6,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 // middleware
 app.use(cors({
-  origin: ["http://localhost:5173","http://localhost:5174"],
+  origin: ["http://localhost:5173", "http://localhost:5174"],
   credentials: true
 }));
 app.use(express.json());
@@ -15,7 +15,7 @@ app.use(express.json());
 // mongo default
 
 
-const uri = `mongodb+srv://khujo-developers:jXW066tX4FlwxiH8@cluster0.schfv1q.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://hostel-hub:OXpqw7hS002Lt1As@cluster0.schfv1q.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -65,6 +65,44 @@ async function run() {
     app.get('/user', async (req, res) => {
       const cursor = userCollection.find();
       const result = await cursor.toArray();
+      res.send(result);
+    })
+    // get user details
+    app.get('/user/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await userCollection.findOne(query);
+      res.send(result);
+    })
+    // request meal
+    app.put('/user/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const options = { upsert: true };
+      const updatedApply = req.body;
+      const apply = {
+        $push: {
+          food: {
+            $each: [updatedApply.food_id],
+            $position: 0 // This will add the new item as the last element in the array
+          }
+        }
+      }
+      const result = await userCollection.updateOne(filter, apply, options);
+      res.send(result);
+    })
+    // update rand
+    app.put('/user/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const options = { upsert: true };
+      const updatedApply = req.body;
+      const apply = {
+        $set: {
+          membership : updatedApply.membership
+        }
+      }
+      const result = await userCollection.updateOne(filter, apply, options);
       res.send(result);
     })
 
