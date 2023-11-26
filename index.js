@@ -77,6 +77,26 @@ async function run() {
       res.send(result);
     })
 
+
+     // update user role
+    app.put('/user/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const options = { upsert: true };
+      const updatedApply = req.body;
+      const apply = {
+        $set: {
+          name: updatedApply.name,
+          email: updatedApply.email,
+          role: updatedApply.role,
+          membership: updatedApply.membership,
+        }
+      }
+      const result = await userCollection.updateOne(filter, apply, options);
+      res.send(result);
+    })
+
+
     // add request
     app.post('/request', async (req, res) => {
       const updatedReqApply = req.body;
