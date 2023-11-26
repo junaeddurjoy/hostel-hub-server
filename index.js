@@ -78,7 +78,7 @@ async function run() {
     })
 
 
-     // update user role
+    // update user role
     app.put('/user/:id', async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) }
@@ -93,6 +93,60 @@ async function run() {
         }
       }
       const result = await userCollection.updateOne(filter, apply, options);
+      res.send(result);
+    })
+
+
+    // add meal
+    app.post('/meal', async (req, res) => {
+      const newMeal = req.body;
+      const result = await mealCollection.insertOne(newMeal);
+      res.send(result);
+    })
+
+    // meal update
+    app.put('/meal/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const options = { upsert: true };
+      const updatedApply = req.body;
+      const apply = {
+        $set: {
+          item : updatedApply.item,
+          type : updatedApply.type,
+          image : updatedApply.image,
+          ingredients : updatedApply.ingredients,
+          price : updatedApply.price,
+          description : updatedApply.description,
+          post_date : updatedApply.post_date,
+          rating : updatedApply.rating,
+          like : updatedApply.like,
+          reviews : updatedApply.reviews,
+          admin : updatedApply.name,
+          email : updatedApply.email,
+          launch : updatedApply.launch
+        }
+      }
+      const result = await mealCollection.updateOne(filter, apply, options);
+      res.send(result);
+    })
+    app.get('/meal', async (req, res) => {
+      const cursor = mealCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+    // delete meal
+    app.delete('/meal/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await mealCollection.deleteOne(query);
+      res.send(result)
+    });
+    // get meal details
+    app.get('/meal/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await mealCollection.findOne(query);
       res.send(result);
     })
 
