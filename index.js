@@ -1,12 +1,14 @@
 const express = require('express');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
 // middleware
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:5174"],
+  origin: ["http://localhost:5173", "http://localhost:5174","https://hostel-hub-b3ddb.web.app"],
   credentials: true
 }));
 app.use(express.json());
@@ -15,7 +17,7 @@ app.use(express.json());
 // mongo default
 
 
-const uri = `mongodb+srv://hostel-hub:OXpqw7hS002Lt1As@cluster0.schfv1q.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.schfv1q.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -169,6 +171,21 @@ async function run() {
       const cursor = requestCollection.find();
       const result = await cursor.toArray();
       res.send(result);
+    })
+
+
+    // payment
+    app.post('/create-payment-intent', async(req,res)=> {
+      const {price} = req.body;
+      const amount = parseInt(price*100);
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount, 
+        currency: 'usd',
+        payment_method_types : ['card']
+      })
+      res.send({
+        clientSecret: paymentIntent.client_secret
+      })
     })
 
     // Send a ping to confirm a successful connection
