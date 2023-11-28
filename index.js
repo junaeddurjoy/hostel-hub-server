@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 // middleware
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:5174","https://hostel-hub-b3ddb.web.app"],
+  origin: ["http://localhost:5173", "http://localhost:5174", "https://hostel-hub-b3ddb.web.app"],
   credentials: true
 }));
 app.use(express.json());
@@ -115,29 +115,51 @@ async function run() {
       const updatedApply = req.body;
       const apply = {
         $set: {
-          item : updatedApply.item,
-          type : updatedApply.type,
-          image : updatedApply.image,
-          ingredients : updatedApply.ingredients,
-          price : updatedApply.price,
-          description : updatedApply.description,
-          post_date : updatedApply.post_date,
-          rating : updatedApply.rating,
-          like : updatedApply.like,
-          reviews : updatedApply.reviews,
-          admin : updatedApply.name,
-          email : updatedApply.email,
-          launch : updatedApply.launch
+          item: updatedApply.item,
+          type: updatedApply.type,
+          image: updatedApply.image,
+          ingredients: updatedApply.ingredients,
+          price: updatedApply.price,
+          description: updatedApply.description,
+          post_date: updatedApply.post_date,
+          rating: updatedApply.rating,
+          like: updatedApply.like,
+          reviews: updatedApply.reviews,
+          admin: updatedApply.name,
+          email: updatedApply.email,
+          launch: updatedApply.launch
         }
       }
       const result = await mealCollection.updateOne(filter, apply, options);
       res.send(result);
     })
+
     app.get('/meal', async (req, res) => {
       const cursor = mealCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     })
+
+    // add like
+    // app.put('/meal/:id', async (req, res) => {
+    //   const id = req.params.id;
+    //   const filter = { _id: new ObjectId(id) }
+    //   const options = { upsert: true };
+    //   const updatedApply = req.body;
+    //   const apply = {
+    //     $set: {
+    //       like: updatedApply.liked,
+    //       launch: updatedApply.launched
+    //     }
+    //   }
+    //   const result = await mealCollection.updateOne(filter, apply, options);
+    //   res.send(result);
+    // })
+    // app.get('/meal', async (req, res) => {
+    //   const cursor = mealCollection.find();
+    //   const result = await cursor.toArray();
+    //   res.send(result);
+    // })
     // delete meal
     app.delete('/meal/:id', async (req, res) => {
       const id = req.params.id;
@@ -176,13 +198,13 @@ async function run() {
 
 
     // payment
-    app.post('/create-payment-intent', async(req,res)=> {
-      const {price} = req.body;
-      const amount = parseInt(price*100);
+    app.post('/create-payment-intent', async (req, res) => {
+      const { price } = req.body;
+      const amount = parseInt(price * 100);
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount, 
+        amount: amount,
         currency: 'usd',
-        payment_method_types : ['card']
+        payment_method_types: ['card']
       })
       res.send({
         clientSecret: paymentIntent.client_secret
