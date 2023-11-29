@@ -1,7 +1,7 @@
-const Meal = require("../../../models/Meal");
+const User = require("../../../models/User");
 
 const findAll = async (req, res) => {
-    const cursor = await Meal.find(querry);
+    const cursor = await User.find(querry);
     res.send(result);
   }
 

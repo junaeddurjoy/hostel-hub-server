@@ -140,27 +140,6 @@ async function run() {
       res.send(result);
     })
 
-    // add like
-    // app.put('/meal/:id', async (req, res) => {
-    //   const id = req.params.id;
-    //   const filter = { _id: new ObjectId(id) }
-    //   const options = { upsert: true };
-    //   const updatedApply = req.body;
-    //   const apply = {
-    //     $set: {
-    //       like: updatedApply.liked,
-    //       launch: updatedApply.launched
-    //     }
-    //   }
-    //   const result = await mealCollection.updateOne(filter, apply, options);
-    //   res.send(result);
-    // })
-    // app.get('/meal', async (req, res) => {
-    //   const cursor = mealCollection.find();
-    //   const result = await cursor.toArray();
-    //   res.send(result);
-    // })
-    // delete meal
     app.delete('/meal/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) }

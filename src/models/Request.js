@@ -1,7 +1,7 @@
 const {Schema,model} = require('mongoose');
 
-const MealSchema = new Schema({
-    admin:{
+const RequestSchema = new Schema({
+    image:{
         type: String
     },
     item:{
@@ -10,11 +10,14 @@ const MealSchema = new Schema({
     ingredients:{
         type: String
     },
-    post_time:{
+    price:{
+        type: Number
+    },
+    userMail:{
         type: String
     },
     rating:{
-        type: Number
+        type: String
     },
     like:{
         type: Number
@@ -25,11 +28,9 @@ const MealSchema = new Schema({
     type:{
         type: String
     },
-    image:{
-        type: String
-    }
+    
 })
 
-const Meal = model('Meal',MealSchema);
+const Request = model('Request',RequestSchema);
 
-module.exports = Meal
+module.exports = Request
