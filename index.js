@@ -125,7 +125,7 @@ async function run() {
           rating: updatedApply.rating,
           like: updatedApply.like,
           reviews: updatedApply.reviews,
-          admin: updatedApply.name,
+          admin: updatedApply.admin,
           email: updatedApply.email,
           launch: updatedApply.launch
         }
