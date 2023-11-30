@@ -5,8 +5,8 @@ require('dotenv').config()
 const getConnectionString = () => {
     let connectionURI;
     connectionURI = process.env.DATABASE_LOCAL
-    connectionURI = connectionURI.replace('<username>', process.env.DB_USER)
-    connectionURI = connectionURI.replace('<password>', process.env.DB_PASS)
+    // connectionURI = connectionURI.replace('<username>', process.env.DB_USER)
+    // connectionURI = connectionURI.replace('<password>', process.env.DB_PASS)
     return connectionURI
 };
 
